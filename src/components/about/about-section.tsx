@@ -46,15 +46,27 @@ export function AboutSection({ author, social, cv }: AboutSectionProps) {
         <div className="grid gap-8 grid-cols-1 md:grid-cols-[280px_1fr] lg:grid-cols-[320px_1fr] lg:gap-12">
           {/* Profile Image */}
           <div className="flex justify-center md:justify-start">
-            <div className="relative h-64 w-64 md:h-72 md:w-72 overflow-hidden rounded-lg shadow-lg">
-              <Image
+            <div className="relative h-64 w-64 md:h-72 md:w-72 overflow-hidden rounded-2xl shadow-2xl ring-2 ring-primary/10">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-secondary/20" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-5xl font-bold shadow-lg">
+                    {author.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                  </div>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    {author.name}
+                  </p>
+                </div>
+              </div>
+              {/* Uncomment when you add your photo */}
+              {/* <Image
                 src={author.avatar}
                 alt={`${author.name} profile picture`}
                 fill
                 className="object-cover"
                 priority
                 sizes="(max-width: 768px) 256px, 300px"
-              />
+              /> */}
             </div>
           </div>
 

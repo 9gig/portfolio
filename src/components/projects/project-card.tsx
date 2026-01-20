@@ -29,35 +29,43 @@ export function ProjectCard({ project, featured = false, onCardClick }: ProjectC
       data-featured={featured}
       onClick={handleClick}
     >
-      {/* Project Image */}
-      {project.imageUrl && (
-        <div className="relative h-48 w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
+      {/* Project Image or Gradient Fallback */}
+      <div className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-primary/20 via-primary/10 to-secondary/20 dark:from-primary/30 dark:via-primary/20 dark:to-secondary/30">
+        {project.imageUrl ? (
           <img
             src={project.imageUrl}
             alt={`${project.title} preview`}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            onError={(e) => {
+              // Hide image if it fails to load
+              e.currentTarget.style.display = 'none';
+            }}
           />
-          {featured && (
-            <div className="absolute right-2 top-2 rounded-full bg-blue-600 px-3 py-1 text-xs font-medium text-white shadow-lg dark:bg-blue-500">
-              Featured
+        ) : (
+          <div className="flex h-full items-center justify-center">
+            <div className="text-center">
+              <div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-3xl font-bold text-white shadow-lg">
+                {project.title.substring(0, 2).toUpperCase()}
+              </div>
+              <p className="text-sm font-semibold text-muted-foreground">
+                {project.category || 'Project'}
+              </p>
             </div>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+        {featured && (
+          <div className="absolute right-2 top-2 rounded-full bg-primary px-3 py-1 text-xs font-medium text-white shadow-lg">
+            Featured
+          </div>
+        )}
+      </div>
 
       <div className="p-6">
         {/* Title and Category */}
         <div className="mb-2 flex items-start justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-              {project.title}
-            </h3>
-            {featured && !project.imageUrl && (
-              <span className="rounded-full bg-blue-600 px-2 py-0.5 text-xs font-medium text-white dark:bg-blue-500">
-                Featured
-              </span>
-            )}
-          </div>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+            {project.title}
+          </h3>
           {project.category && (
             <span className="shrink-0 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400">
               {project.category}
