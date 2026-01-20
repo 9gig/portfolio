@@ -24,6 +24,19 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
+    
+    /* Glassmorphism variables for light theme (Requirement 11.4) */
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: rgba(31, 38, 135, 0.15);
+    
+    /* Gradient variables for light theme (Requirement 11.2) */
+    --gradient-primary-start: #667eea;
+    --gradient-primary-end: #764ba2;
+    --gradient-secondary-start: #f093fb;
+    --gradient-secondary-end: #f5576c;
+    --gradient-accent-start: #4facfe;
+    --gradient-accent-end: #00f2fe;
   }
 
   .dark {
@@ -46,6 +59,19 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 94.1%;
+    
+    /* Glassmorphism variables for dark theme (Requirement 11.3) */
+    --glass-bg: rgba(17, 25, 40, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.125);
+    --glass-shadow: rgba(0, 0, 0, 0.37);
+    
+    /* Gradient variables for dark theme (Requirement 11.2) */
+    --gradient-primary-start: #7c3aed;
+    --gradient-primary-end: #a855f7;
+    --gradient-secondary-start: #ec4899;
+    --gradient-secondary-end: #f43f5e;
+    --gradient-accent-start: #06b6d4;
+    --gradient-accent-end: #0ea5e9;
   }
 }
 
@@ -126,6 +152,85 @@
   /* Remove default focus outline when using focus-visible */
   *:focus:not(:focus-visible) {
     outline: none;
+  }
+}
+
+@layer components {
+  /* Glassmorphism styles for modern UI (Requirements 11.2, 11.3, 11.4) */
+  /* Uses CSS variables that transition smoothly between themes */
+  .glass-light {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px 0 var(--glass-shadow);
+  }
+  
+  .glass-dark {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px 0 var(--glass-shadow);
+  }
+  
+  .glass-card {
+    @apply rounded-2xl;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px 0 var(--glass-shadow);
+  }
+  
+  /* Gradient text utilities with theme-aware colors (Requirement 11.2) */
+  .gradient-text-primary {
+    background: linear-gradient(135deg, var(--gradient-primary-start) 0%, var(--gradient-primary-end) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .gradient-text-secondary {
+    background: linear-gradient(135deg, var(--gradient-secondary-start) 0%, var(--gradient-secondary-end) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .gradient-text-accent {
+    background: linear-gradient(135deg, var(--gradient-accent-start) 0%, var(--gradient-accent-end) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Gradient background utilities with theme-aware colors (Requirement 11.2) */
+  .gradient-bg-primary {
+    background: linear-gradient(135deg, var(--gradient-primary-start) 0%, var(--gradient-primary-end) 100%);
+  }
+  
+  .gradient-bg-secondary {
+    background: linear-gradient(135deg, var(--gradient-secondary-start) 0%, var(--gradient-secondary-end) 100%);
+  }
+  
+  .gradient-bg-accent {
+    background: linear-gradient(135deg, var(--gradient-accent-start) 0%, var(--gradient-accent-end) 100%);
+  }
+  
+  .gradient-bg-aurora {
+    background: linear-gradient(135deg, #13FFAA 0%, #7e22ce 50%, #020617 100%);
+  }
+  
+  /* Dark theme specific aurora gradient */
+  .dark .gradient-bg-aurora {
+    background: linear-gradient(135deg, #13FFAA 0%, #a855f7 50%, #0f172a 100%);
+  }
+  
+  /* Animated gradient backgrounds */
+  .gradient-animated {
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
   }
 }
 

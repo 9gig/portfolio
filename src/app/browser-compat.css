@@ -1,0 +1,250 @@
+/* ============================================
+   Browser-Specific Fallbacks & Compatibility
+   Requirements: 2.5, 3.6
+   ============================================ */
+
+/* Firefox backdrop-filter fallback (for versions < 103) */
+@supports not (backdrop-filter: blur(10px)) {
+  .glass-card,
+  .glass-light,
+  .glass-dark {
+    /* More opaque background when backdrop-filter not supported */
+    background: rgba(17, 25, 40, 0.95) !important;
+  }
+  
+  .dark .glass-card,
+  .dark .glass-light,
+  .dark .glass-dark {
+    background: rgba(17, 25, 40, 0.98) !important;
+  }
+  
+  :root:not(.dark) .glass-card,
+  :root:not(.dark) .glass-light,
+  :root:not(.dark) .glass-dark {
+    background: rgba(255, 255, 255, 0.95) !important;
+  }
+}
+
+/* Safari-specific backdrop-filter support */
+@supports (-webkit-backdrop-filter: blur(10px)) {
+  .glass-card,
+  .glass-light,
+  .glass-dark {
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+/* Gradient text fallback for older browsers */
+@supports not (background-clip: text) {
+  .gradient-text-primary,
+  .gradient-text-secondary,
+  .gradient-text-accent,
+  .bg-clip-text {
+    /* Fallback to solid color */
+    color: hsl(var(--primary));
+    background: none !important;
+    -webkit-text-fill-color: inherit !important;
+  }
+}
+
+/* Smooth gradient rendering - prevent banding */
+.gradient-bg-primary,
+.gradient-bg-secondary,
+.gradient-bg-accent,
+.gradient-bg-aurora,
+[class*="bg-gradient-"] {
+  /* Add subtle noise to prevent gradient banding */
+  background-blend-mode: normal;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Hardware acceleration for animations */
+.glass-card,
+[class*="animate-"],
+[class*="transition-"] {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+/* Prevent animation jank on mobile */
+@media (max-width: 768px) {
+  .glass-card,
+  [class*="animate-"],
+  [class*="transition-"] {
+    /* Reduce complexity on mobile */
+    will-change: auto;
+  }
+}
+
+/* Fix for Safari gradient rendering issues */
+@media not all and (min-resolution:.001dpcm) {
+  @supports (-webkit-appearance:none) {
+    .gradient-bg-primary,
+    .gradient-bg-secondary,
+    .gradient-bg-accent,
+    [class*="bg-gradient-"] {
+      /* Safari-specific gradient smoothing */
+      -webkit-background-size: 100% 100%;
+      background-size: 100% 100%;
+    }
+  }
+}
+
+/* Chrome/Edge specific optimizations */
+@supports (backdrop-filter: blur(10px)) and (-webkit-backdrop-filter: blur(10px)) {
+  .glass-card {
+    /* Optimal blur for Chromium browsers */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+/* Ensure proper text rendering across browsers */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Fix for Firefox gradient text rendering */
+@-moz-document url-prefix() {
+  .gradient-text-primary,
+  .gradient-text-secondary,
+  .gradient-text-accent,
+  .bg-clip-text {
+    /* Firefox-specific gradient text fix */
+    background-attachment: fixed;
+  }
+}
+
+/* Prevent iOS Safari zoom on input focus */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* Fix for Safari flexbox bugs */
+@supports (-webkit-appearance: none) {
+  .flex,
+  .inline-flex {
+    /* Safari flexbox fix */
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+  }
+}
+
+/* Prevent text selection on animated elements */
+[class*="animate-"],
+[class*="transition-"] {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* But allow text selection on content */
+p, h1, h2, h3, h4, h5, h6, span, a {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* Fix for Chrome autofill background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px hsl(var(--background)) inset !important;
+  -webkit-text-fill-color: hsl(var(--foreground)) !important;
+}
+
+/* Smooth scrolling for all browsers */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Fix for Edge/IE backdrop-filter */
+@supports (-ms-ime-align: auto) {
+  .glass-card,
+  .glass-light,
+  .glass-dark {
+    /* Solid background for IE11/old Edge */
+    background: rgba(17, 25, 40, 0.95) !important;
+    backdrop-filter: none !important;
+  }
+}
+
+/* Prevent font rendering issues in Firefox */
+@-moz-document url-prefix() {
+  body {
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Fix for Safari border-radius with overflow */
+@supports (-webkit-appearance: none) {
+  .rounded,
+  .rounded-lg,
+  .rounded-xl,
+  .rounded-2xl,
+  .rounded-3xl {
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+  }
+}
+
+/* Ensure proper stacking context for glassmorphism */
+.glass-card,
+.glass-light,
+.glass-dark {
+  isolation: isolate;
+  z-index: 0;
+}
+
+/* Fix for Chrome gradient animation performance */
+@media (prefers-reduced-motion: no-preference) {
+  .gradient-animated {
+    animation: gradientShift 3s ease infinite;
+    background-size: 200% 200%;
+  }
+}
+
+/* Prevent layout shift from scrollbar */
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
+/* Custom scrollbar for Webkit browsers */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted)) hsl(var(--background));
+}

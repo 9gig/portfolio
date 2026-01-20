@@ -1,124 +1,98 @@
 'use client';
 
 import { Suspense } from 'react';
-import { ProjectsSection } from '@/components/projects';
-import { AboutSection } from '@/components/about';
-import { SkillsSection } from '@/components/skills';
-import { ContactSection } from '@/components/contact';
-import { AnimatedSection } from '@/components/ui/animated-section';
 import { SectionErrorBoundary } from '@/components/error-boundary';
 import { SectionLoadingSkeleton } from '@/components/ui/loading-spinner';
 import { siteConfig } from '@/config/site';
 
+// Modern UI Components
+import { HeroSection } from '@/components/hero/hero-section';
+import { ProjectGridModern } from '@/components/projects/project-grid-modern';
+import { SkillsGrid } from '@/components/skills/skills-grid';
+import { Timeline } from '@/components/experience/timeline';
+import { ContactFormModern } from '@/components/contact/contact-form-modern';
+import { ScrollReveal } from '@/components/ui/scroll-reveal';
+
 export default function Home() {
-  const { author, features } = siteConfig;
+  const { features } = siteConfig;
 
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
+      {/* Modern Hero Section */}
       <SectionErrorBoundary sectionName="Hero">
-        <AnimatedSection animation="fade-in">
-          <section 
-            id="hero" 
-            className="container px-4 py-24 md:py-32 scroll-mt-14"
-            aria-labelledby="hero-heading"
-            tabIndex={-1}
-          >
-            <div className="mx-auto max-w-3xl text-center">
-              <h1 
-                id="hero-heading"
-                className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl"
-              >
-                {author.name}
-              </h1>
-              <p className="mt-6 text-lg text-muted-foreground">
-                {author.bio}
-              </p>
-            </div>
-          </section>
-        </AnimatedSection>
+        <HeroSection />
       </SectionErrorBoundary>
 
-      {/* About Section */}
-      <SectionErrorBoundary sectionName="About">
-        <Suspense fallback={<SectionLoadingSkeleton />}>
-          <AnimatedSection animation="slide-up" delay={0.1}>
-            <AboutSection 
-              author={author} 
-              social={siteConfig.social} 
-              cv={siteConfig.cv} 
-            />
-          </AnimatedSection>
-        </Suspense>
-      </SectionErrorBoundary>
-
-      {/* Projects Section */}
+      {/* Projects Section with Modern Cards */}
       {features.showProjects && (
         <SectionErrorBoundary sectionName="Projects">
           <Suspense fallback={<SectionLoadingSkeleton />}>
-            <AnimatedSection animation="slide-up" delay={0.2}>
+            <ScrollReveal>
               <section 
                 id="projects" 
-                className="container px-4 py-16 md:py-24 scroll-mt-14 bg-muted/50"
+                className="py-20 scroll-mt-14"
                 aria-labelledby="projects-heading"
                 tabIndex={-1}
               >
-                <div className="mx-auto max-w-7xl">
-                  <ProjectsSection
-                    manualProjects={siteConfig.projects}
-                    showGitHubRepos={false}
-                  />
+                <div className="container mx-auto px-4">
+                  <h2 
+                    id="projects-heading"
+                    className="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
+                  >
+                    Featured Projects
+                  </h2>
+                  <ProjectGridModern projects={siteConfig.projects} />
                 </div>
               </section>
-            </AnimatedSection>
+            </ScrollReveal>
           </Suspense>
         </SectionErrorBoundary>
       )}
 
-      {/* Skills Section */}
+      {/* Skills Section with Modern Grid */}
       {features.showSkills && (
         <SectionErrorBoundary sectionName="Skills">
           <Suspense fallback={<SectionLoadingSkeleton />}>
-            <AnimatedSection animation="slide-up" delay={0.1}>
-              <SkillsSection />
-            </AnimatedSection>
+            <ScrollReveal>
+              <SkillsGrid />
+            </ScrollReveal>
           </Suspense>
         </SectionErrorBoundary>
       )}
 
-      {/* Experience Section */}
+      {/* Experience Timeline */}
       {features.showExperience && (
         <SectionErrorBoundary sectionName="Experience">
-          <AnimatedSection animation="slide-up" delay={0.1}>
-            <section 
-              id="experience" 
-              className="container px-4 py-16 md:py-24 scroll-mt-14 bg-muted/50"
-              aria-labelledby="experience-heading"
-              tabIndex={-1}
-            >
-              <div className="mx-auto max-w-3xl">
-                <h2 
-                  id="experience-heading"
-                  className="text-3xl font-bold tracking-tight sm:text-4xl"
-                >
-                  Experience
-                </h2>
-                <p className="mt-6 text-lg text-muted-foreground">
-                  Professional experience section - to be implemented in task 7.
-                </p>
-              </div>
-            </section>
-          </AnimatedSection>
+          <Suspense fallback={<SectionLoadingSkeleton />}>
+            <ScrollReveal>
+              <Timeline />
+            </ScrollReveal>
+          </Suspense>
         </SectionErrorBoundary>
       )}
 
-      {/* Contact Section */}
+      {/* Modern Contact Form */}
       {features.showContact && (
         <SectionErrorBoundary sectionName="Contact">
           <Suspense fallback={<SectionLoadingSkeleton />}>
-            <AnimatedSection animation="slide-up" delay={0.1}>
-              <ContactSection />
-            </AnimatedSection>
+            <ScrollReveal>
+              <section 
+                id="contact" 
+                className="py-20 scroll-mt-14"
+                aria-labelledby="contact-heading"
+                tabIndex={-1}
+              >
+                <div className="container mx-auto px-4">
+                  <h2 
+                    id="contact-heading"
+                    className="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
+                  >
+                    Get In Touch
+                  </h2>
+                  <ContactFormModern />
+                </div>
+              </section>
+            </ScrollReveal>
           </Suspense>
         </SectionErrorBoundary>
       )}

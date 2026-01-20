@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import './browser-compat.css'
 import { Header } from '@/components/layout/header'
-import { Footer } from '@/components/layout/footer'
+import { FooterModern } from '@/components/layout/footer-modern'
 import { SkipLink } from '@/components/layout/skip-link'
 import { BackToTop } from '@/components/ui/back-to-top'
+import { NavigationProgress } from '@/components/ui/navigation-progress'
 import { ThemeProvider } from '@/components/theme-provider'
 import { siteConfig } from '@/config/site'
 
@@ -153,13 +155,14 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <ThemeProvider>
+          <NavigationProgress />
           <SkipLink />
           <div className="relative flex min-h-screen flex-col">
             <Header />
             <main id="main-content" className="flex-1" tabIndex={-1}>
               {children}
             </main>
-            <Footer />
+            <FooterModern />
           </div>
           <BackToTop />
         </ThemeProvider>

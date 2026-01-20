@@ -1,16 +1,27 @@
 import { useEffect } from 'react';
 import { useThemeStore } from '@/store/theme';
 
+/**
+ * Theme hook with system preference support
+ * 
+ * Requirements:
+ * - 11.1: Implement theme switching logic
+ * - 11.5: Load theme from localStorage on mount
+ * - 11.6: Use system preference as default when theme is 'system'
+ * 
+ * This hook manages theme state and applies it to the document.
+ * It automatically detects system theme preference and listens for changes.
+ */
 export function useTheme() {
   const { theme, setTheme, resolvedTheme, setResolvedTheme } = useThemeStore();
 
-  // Detect system theme preference
+  // Detect system theme preference (Requirement 11.6)
   const getSystemTheme = (): 'light' | 'dark' => {
     if (typeof window === 'undefined') return 'light';
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   };
 
-  // Apply theme to document
+  // Apply theme to document (Requirement 11.1)
   useEffect(() => {
     const root = document.documentElement;
     
@@ -19,13 +30,14 @@ export function useTheme() {
     
     let effectiveTheme: 'light' | 'dark';
     
+    // Resolve 'system' theme to actual light/dark (Requirement 11.6)
     if (theme === 'system') {
       effectiveTheme = getSystemTheme();
     } else {
       effectiveTheme = theme;
     }
     
-    // Apply theme class (CSS handles transitions)
+    // Apply theme class (CSS handles transitions via globals.css)
     root.classList.add(effectiveTheme);
     
     // Update color-scheme for native browser elements
@@ -37,13 +49,14 @@ export function useTheme() {
     }
   }, [theme, resolvedTheme, setResolvedTheme]);
 
-  // Listen for system theme changes
+  // Listen for system theme changes (Requirement 11.6)
   useEffect(() => {
     if (typeof window === 'undefined') return;
     
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     
     const handleChange = (e: MediaQueryListEvent) => {
+      // Only update if user has selected 'system' theme
       if (theme === 'system') {
         const root = document.documentElement;
         root.classList.remove('light', 'dark');

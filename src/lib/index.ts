@@ -4,3 +4,5 @@ export * from './config-validator';
 export * from './analytics';
 export * from './animation-variants';
 export * from './accessibility-utils';
+export * from './lazy-load-utils';
+export * from './mobile-optimization';
