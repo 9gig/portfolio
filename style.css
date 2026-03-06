@@ -802,7 +802,8 @@ img {
 }
 
 .skill-portrait-icon {
-  font-size: 3.5rem;
+  font-size: 4rem;
+  color: #fff;
   filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.3));
   position: relative;
   z-index: 1;
@@ -1002,8 +1003,11 @@ img {
 }
 
 .skill-icon {
-  font-size: 1.3rem;
+  font-size: 1.6rem;
   flex-shrink: 0;
+  color: var(--accent-2);
+  width: 28px;
+  text-align: center;
 }
 
 .skill-name {
