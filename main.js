@@ -341,166 +341,61 @@ const activeObserver = new IntersectionObserver(
 sections.forEach((section) => activeObserver.observe(section));
 
 
+
 // =============================================
-// GEMINI AI CHATBOT
+// CONTACT FORM AJAX SUBMISSION
 // =============================================
-const chatFab = document.getElementById('chatFab');
-const chatPanel = document.getElementById('chatPanel');
-const chatMessages = document.getElementById('chatMessages');
-const chatInput = document.getElementById('chatInput');
-const chatSend = document.getElementById('chatSend');
-const chatApiNotice = document.getElementById('chatApiNotice');
-const chatApiKey = document.getElementById('chatApiKey');
-const chatApiSave = document.getElementById('chatApiSave');
+const contactForm = document.getElementById('contactForm');
+const thankYouModal = document.getElementById('thankYouModal');
+const modalBackdrop = document.getElementById('modalBackdrop');
+const closeModalBtn = document.getElementById('closeModalBtn');
+const modalContent = document.getElementById('modalContent');
+const submitBtn = contactForm ? contactForm.querySelector('.contact-submit') : null;
 
-let geminiApiKey = localStorage.getItem('gemini_api_key') || '';
+if (contactForm && thankYouModal) {
+    contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Prevent default redirection
+        
+        const originalBtnHtml = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<span>Sending...</span>';
+        submitBtn.disabled = true;
 
-if (chatFab && chatPanel) {
-    // Show/hide API notice
-    if (geminiApiKey) chatApiNotice.classList.add('hidden');
+        const formData = new FormData(contactForm);
 
-    // Toggle chat panel
-    chatFab.addEventListener('click', () => {
-        chatFab.classList.toggle('active');
-        chatPanel.classList.toggle('active');
-    });
+        try {
+            const response = await fetch("https://formsubmit.co/ajax/soloprecious65@gmail.com", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
 
-    // Save API key
-    chatApiSave.addEventListener('click', () => {
-        const key = chatApiKey.value.trim();
-        if (key) {
-            geminiApiKey = key;
-            localStorage.setItem('gemini_api_key', key);
-            chatApiNotice.classList.add('hidden');
+            if (response.ok) {
+                // Show Success Modal
+                contactForm.reset();
+                thankYouModal.classList.remove('pointer-events-none');
+                thankYouModal.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            } else {
+                alert("Oops! There was a problem sending your message.");
+            }
+        } catch (error) {
+            alert("Oops! There was a network error. Please try again.");
+        } finally {
+            submitBtn.innerHTML = originalBtnHtml;
+            submitBtn.disabled = false;
         }
     });
 
-    // Suggestion chips
-    document.querySelectorAll('.chat-suggestion').forEach((btn) => {
-        btn.addEventListener('click', () => {
-            const prompt = btn.dataset.prompt;
-            chatInput.value = prompt;
-            sendMessage(prompt);
-        });
-    });
+    const closeModal = () => {
+        thankYouModal.classList.add('pointer-events-none');
+        thankYouModal.classList.add('opacity-0');
+        modalContent.classList.remove('scale-100');
+        modalContent.classList.add('scale-95');
+    };
 
-    // Send
-    chatSend.addEventListener('click', () => sendMessage(chatInput.value));
-    chatInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(chatInput.value); }
-    });
-}
-
-// System prompt with Solomon's full profile
-const SYSTEM_PROMPT = `You are Solomon Nengi Precious's AI portfolio assistant. You are embedded on his personal portfolio website. Your job is to:
-
-1. Explain his projects, skills, and experience in rich detail when asked
-2. Help potential clients understand how Solomon's skills match their project needs
-3. Draft project proposals on Solomon's behalf when requested
-4. Be friendly, professional, and persuasive — you represent Solomon
-
-SOLOMON'S PROFILE:
-- Name: Solomon Nengi Precious
-- Title: Senior Mobile Developer / Mobile Team Lead
-- Email: soloprecious65@gmail.com
-- Phone: +234 808 765 6557
-- GitHub: github.com/9gig
-- LinkedIn: linkedin.com/in/nengi-solomon
-
-SKILLS:
-- Flutter/Dart (Expert, 95%) — Custom Painter, Rive animations, Flame engine, Clean Architecture, TDD
-- Go/Golang (Advanced, 80%) — Backend services, concurrency, scalable APIs
-- JavaScript (Advanced, 85%) — Node.js, Express, full-stack
-- Kotlin (Intermediate, 70%) — Native Android
-- PHP (Intermediate, 65%)
-- Tools: Firebase, REST API, WebSocket, Git/GitFlow, CI/CD (CodeMagic), Shorebird, Figma, Adobe Illustrator
-- Practices: Clean Architecture, TDD, MVVM, MVC, Performance Optimization
-- Payment: Apple Pay, Google Pay, In-App Purchase
-
-PROJECTS:
-1. **3Scorers** (Mobile Team Lead, Jun 2023–Present) — Fantasy prediction app with live matches, Custom Painter + Rive animations, Flame engine for game-like elements, Clean Architecture, comprehensive TDD. Available on Play Store.
-2. **Little Wheel Agent** — Empowers Nigerians to save/build wealth + earn commissions. Google ML Kit, Bloc, MVC architecture.
-3. **Moremonee MFB** — Online banking app for quick payments/financial growth. Stacked Architecture, Dojah SDK for identity verification.
-4. **Kampgig** — Housing/roommate finder with payment system (Kampie). Full-stack JavaScript, Node.js/Express. Open source on GitHub.
-5. **Mita** — Open-source full-stack JavaScript project showcasing modern architecture.
-
-EXPERIENCE:
-- Mobile Team Lead at 3Scorers (Jun 2023–Present)
-- Senior Flutter Developer at Moremonee MFB (Apr 2025)
-- Senior Flutter Developer at Little Wheel (May 2025)
-
-When drafting proposals, include: project understanding, proposed tech stack, timeline estimate, why Solomon is the right fit. Keep proposals professional but warm.
-
-When explaining skills relevance, be specific about which of Solomon's projects demonstrate the capability the client needs.
-
-IMPORTANT: Keep responses concise but thorough. Use bullet points and formatting. Don't use markdown headers (## etc) since this is rendered as plain text. Use bold **text** sparingly for emphasis.`;
-
-async function sendMessage(text) {
-    text = text.trim();
-    if (!text) return;
-    chatInput.value = '';
-
-    // Remove suggestion chips after first message
-    const suggestionsEl = chatMessages.querySelector('.chat-suggestions');
-    if (suggestionsEl) suggestionsEl.remove();
-
-    // Add user message
-    appendMessage('user', text);
-
-    // Check for API key
-    if (!geminiApiKey) {
-        appendMessage('bot', '⚠️ Please enter your Gemini API key below to enable AI chat. You can get one free at <a href="https://aistudio.google.com/apikey" target="_blank" style="color: var(--accent-2);">aistudio.google.com</a>');
-        chatApiNotice.classList.remove('hidden');
-        return;
-    }
-
-    // Show typing indicator
-    const typingDiv = document.createElement('div');
-    typingDiv.className = 'chat-message bot';
-    typingDiv.innerHTML = '<div class="chat-typing"><span></span><span></span><span></span></div>';
-    chatMessages.appendChild(typingDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-
-    try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-                contents: [{ parts: [{ text }] }],
-                generationConfig: { temperature: 0.8, maxOutputTokens: 1024 }
-            })
-        });
-
-        const data = await response.json();
-        typingDiv.remove();
-
-        if (data.error) {
-            appendMessage('bot', `❌ Error: ${data.error.message || 'Something went wrong. Please check your API key.'}`);
-        } else {
-            const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not generate a response.';
-            appendMessage('bot', formatBotReply(reply));
-        }
-    } catch (err) {
-        typingDiv.remove();
-        appendMessage('bot', '❌ Network error. Please check your connection and try again.');
-    }
-}
-
-function appendMessage(role, html) {
-    const div = document.createElement('div');
-    div.className = `chat-message ${role}`;
-    div.innerHTML = `<div class="chat-bubble">${html}</div>`;
-    chatMessages.appendChild(div);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-function formatBotReply(text) {
-    // Convert **bold** to <strong>
-    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    // Convert bullet points
-    text = text.replace(/^[-•]\s/gm, '→ ');
-    // Convert newlines to <br>
-    text = text.replace(/\n/g, '<br>');
-    return text;
+    closeModalBtn.addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', closeModal);
 }
