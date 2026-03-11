@@ -205,50 +205,43 @@ document.addEventListener('mousemove', (e) => {
 
 // ─── TYPEWRITER EFFECT ─────────────────────
 const typewriterEl = document.getElementById('typewriter');
-const titles = [
-    'Senior Mobile Developer',
-    'Flutter Expert',
-    'Cross-Platform Architect',
-    'Digital Craftsman',
-    'Go Backend Engineer',
-];
-let titleIndex = 0, charIndex = 0, isDeleting = false, typeSpeed = 80;
+if (typewriterEl) {
+    const titles = [
+        'Senior Software Developer',
+        'Full-Stack Engineer',
+        'Mobile Architect',
+        'Digital Craftsman',
+        'Backend Specialist',
+    ];
+    let titleIndex = 0, charIndex = 0, isDeleting = false, typeSpeed = 80;
 
-function typewrite() {
-    const current = titles[titleIndex];
-    if (isDeleting) {
-        typewriterEl.textContent = current.substring(0, charIndex - 1);
-        charIndex--;
-        typeSpeed = 40;
-    } else {
-        typewriterEl.textContent = current.substring(0, charIndex + 1);
-        charIndex++;
-        typeSpeed = 80;
+    function typewrite() {
+        const current = titles[titleIndex];
+        if (isDeleting) {
+            typewriterEl.textContent = current.substring(0, charIndex - 1);
+            charIndex--;
+            typeSpeed = 40;
+        } else {
+            typewriterEl.textContent = current.substring(0, charIndex + 1);
+            charIndex++;
+            typeSpeed = 80;
+        }
+        if (!isDeleting && charIndex === current.length) {
+            typeSpeed = 2000;
+            isDeleting = true;
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            titleIndex = (titleIndex + 1) % titles.length;
+            typeSpeed = 500;
+        }
+        setTimeout(typewrite, typeSpeed);
     }
-    if (!isDeleting && charIndex === current.length) {
-        typeSpeed = 2000;
-        isDeleting = true;
-    } else if (isDeleting && charIndex === 0) {
-        isDeleting = false;
-        titleIndex = (titleIndex + 1) % titles.length;
-        typeSpeed = 500;
-    }
-    setTimeout(typewrite, typeSpeed);
+    setTimeout(typewrite, 1200);
 }
-setTimeout(typewrite, 1200);
 
 
 // ─── SCROLL REVEAL ─────────────────────────
-const scrollRevealEls = document.querySelectorAll('.scroll-reveal');
-const observer = new IntersectionObserver(
-    (entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) entry.target.classList.add('visible');
-        });
-    },
-    { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
-);
-scrollRevealEls.forEach((el) => observer.observe(el));
+// Handled by GSAP ScrollTrigger in index.html
 
 
 // ─── STAT COUNTER ──────────────────────────
@@ -302,19 +295,21 @@ window.addEventListener('scroll', () => {
 
 // ─── MOBILE MENU ───────────────────────────
 const hamburger = document.getElementById('hamburger');
-const mobileMenu = document.getElementById('mobileMenu');
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    mobileMenu.classList.toggle('active');
-    document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
-});
-document.querySelectorAll('.mobile-link').forEach((link) => {
-    link.addEventListener('click', () => {
-        hamburger.classList.remove('active');
-        mobileMenu.classList.remove('active');
-        document.body.style.overflow = '';
+const mobileMenuOld = document.getElementById('mobileMenu');
+if (hamburger && mobileMenuOld) {
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        mobileMenuOld.classList.toggle('active');
+        document.body.style.overflow = mobileMenuOld.classList.contains('active') ? 'hidden' : '';
     });
-});
+    document.querySelectorAll('.mobile-link').forEach((link) => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            mobileMenuOld.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    });
+}
 
 
 // ─── SMOOTH SCROLL ─────────────────────────
@@ -360,39 +355,41 @@ const chatApiSave = document.getElementById('chatApiSave');
 
 let geminiApiKey = localStorage.getItem('gemini_api_key') || '';
 
-// Show/hide API notice
-if (geminiApiKey) chatApiNotice.classList.add('hidden');
+if (chatFab && chatPanel) {
+    // Show/hide API notice
+    if (geminiApiKey) chatApiNotice.classList.add('hidden');
 
-// Toggle chat panel
-chatFab.addEventListener('click', () => {
-    chatFab.classList.toggle('active');
-    chatPanel.classList.toggle('active');
-});
-
-// Save API key
-chatApiSave.addEventListener('click', () => {
-    const key = chatApiKey.value.trim();
-    if (key) {
-        geminiApiKey = key;
-        localStorage.setItem('gemini_api_key', key);
-        chatApiNotice.classList.add('hidden');
-    }
-});
-
-// Suggestion chips
-document.querySelectorAll('.chat-suggestion').forEach((btn) => {
-    btn.addEventListener('click', () => {
-        const prompt = btn.dataset.prompt;
-        chatInput.value = prompt;
-        sendMessage(prompt);
+    // Toggle chat panel
+    chatFab.addEventListener('click', () => {
+        chatFab.classList.toggle('active');
+        chatPanel.classList.toggle('active');
     });
-});
 
-// Send
-chatSend.addEventListener('click', () => sendMessage(chatInput.value));
-chatInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(chatInput.value); }
-});
+    // Save API key
+    chatApiSave.addEventListener('click', () => {
+        const key = chatApiKey.value.trim();
+        if (key) {
+            geminiApiKey = key;
+            localStorage.setItem('gemini_api_key', key);
+            chatApiNotice.classList.add('hidden');
+        }
+    });
+
+    // Suggestion chips
+    document.querySelectorAll('.chat-suggestion').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const prompt = btn.dataset.prompt;
+            chatInput.value = prompt;
+            sendMessage(prompt);
+        });
+    });
+
+    // Send
+    chatSend.addEventListener('click', () => sendMessage(chatInput.value));
+    chatInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(chatInput.value); }
+    });
+}
 
 // System prompt with Solomon's full profile
 const SYSTEM_PROMPT = `You are Solomon Nengi Precious's AI portfolio assistant. You are embedded on his personal portfolio website. Your job is to:
