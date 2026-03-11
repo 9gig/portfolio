@@ -1877,6 +1877,10 @@ img {
     font-size: 1rem;
   }
 
+  .marquee {
+    animation: marquee 8s linear infinite;
+  }
+
   .marquee span {
     font-size: clamp(2.5rem, 8vw, 4rem);
     padding: 0 40px;
@@ -1899,7 +1903,7 @@ img {
 
 /* ---------- Marquee Animation ---------- */
 .marquee {
-  animation: marquee 30s linear infinite;
+  animation: marquee 15s linear infinite;
   display: flex;
   white-space: nowrap;
 }
