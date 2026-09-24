@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Studies · Solomon Nengi Precious</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Space Grotesk', 'sans-serif'] },
+          colors: { primary: '#0a0a0a', secondary: '#1a1a1a', accent: '#00ff88', accent2: '#7000ff', muted: '#888888' },
+          animation: { 'float': 'float 6s ease-in-out infinite' },
+          keyframes: { float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } } }
+        }
+      }
+    }
+  </script>
+  <meta name="description"
+    content="Case studies by Solomon Nengi Precious: Brick Fury (game design and engineering), 3Scorers (fantasy football), and fintech apps shipped for Nigerian users. The decisions behind the screens." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+
+<body>
+  <div class="grain-overlay"
+    style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; opacity: 0.03; background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E');">
+  </div>
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+  <canvas id="particleCanvas"></canvas>
+  <div class="gradient-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="navbar fixed top-0 left-0 w-full z-50 px-6 py-4 transition-all duration-300" id="navbar">
+    <div class="max-w-7xl mx-auto flex justify-between items-center w-full">
+      <a href="/" class="font-display font-black text-3xl tracking-tighter magnetic-btn pr-8">
+        <span style="color:#00ff88; font-weight:400;">&lt;</span>SNP<span style="color:#00ff88; font-weight:400;">
+          /&gt;</span>
+      </a>
+      <div class="hidden md:flex items-center gap-12">
+        <a href="/" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors magnetic-btn pb-1">Home</a>
+        <a href="#brickfury" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors magnetic-btn pb-1">Brick Fury</a>
+        <a href="#threescorers" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors magnetic-btn pb-1">3Scorers</a>
+        <a href="#fintech" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors magnetic-btn pb-1">Fintech</a>
+        <a href="#approach" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors magnetic-btn pb-1">Approach</a>
+        <a href="/#contact" class="nav-link text-sm font-medium text-accent hover:text-white transition-colors magnetic-btn pb-1">Contact</a>
+      </div>
+      <button class="md:hidden text-white" id="mobile-menu-btn" aria-label="Open menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <div class="fixed inset-0 bg-primary z-40 transform translate-x-full transition-transform duration-500 md:hidden" id="mobile-menu">
+    <div class="flex flex-col items-center justify-center h-full gap-8">
+      <a href="/" class="text-3xl font-display font-bold mobile-link text-gray-300 hover:text-white pb-1">Home</a>
+      <a href="#brickfury" class="text-3xl font-display font-bold mobile-link text-gray-300 hover:text-white pb-1">Brick Fury</a>
+      <a href="#threescorers" class="text-3xl font-display font-bold mobile-link text-gray-300 hover:text-white pb-1">3Scorers</a>
+      <a href="#fintech" class="text-3xl font-display font-bold mobile-link text-gray-300 hover:text-white pb-1">Fintech</a>
+      <a href="#approach" class="text-3xl font-display font-bold mobile-link text-gray-300 hover:text-white pb-1">Approach</a>
+      <a href="/#contact" class="text-3xl font-display font-bold mobile-link text-gray-300 hover:text-white pb-1">Contact</a>
+    </div>
+  </div>
+
+  <!-- Intro -->
+  <section class="relative overflow-hidden cs-intro">
+    <div class="absolute inset-0 opacity-10"
+      style="background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0); background-size: 50px 50px;">
+    </div>
+    <div class="relative z-10 section-container text-center">
+      <p class="text-accent font-mono text-sm tracking-widest uppercase mb-4" id="cs-kicker">Case Studies</p>
+      <h1 class="font-display font-bold text-5xl sm:text-6xl md:text-8xl tracking-tighter mb-6" id="cs-title">
+        BEHIND THE&nbsp;<span class="text-gradient-hero">SCREENS</span>
+      </h1>
+      <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10" id="cs-desc">
+        The decisions behind the products I've designed and built: what the problem was, what I chose, and why.
+      </p>
+      <div class="cs-jump" id="cs-jump">
+        <a href="#brickfury" class="pill magnetic-btn">01 · Brick Fury</a>
+        <a href="#threescorers" class="pill magnetic-btn">02 · 3Scorers</a>
+        <a href="#fintech" class="pill magnetic-btn">03 · Fintech</a>
+        <a href="#approach" class="pill magnetic-btn">04 · How I judge a screen</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 01 BRICK FURY ═══════════ -->
+  <section class="section" id="brickfury">
+    <div class="section-container">
+      <div class="cs-head scroll-reveal">
+        <div>
+          <span class="section-tag">01 · Mobile Game</span>
+          <h2 class="section-title">BRICK FURY</h2>
+        </div>
+        <p class="panel-description cs-lede">
+          A space-themed brick breaker built in Flutter and Flame. I did all of it: game design, the interface
+          system, HUD, economy, naming, store assets and every line of code. The goal was an arcade game that feels
+          loud and physical, with an interface around it that stays calm and readable.
+        </p>
+      </div>
+
+      <div class="cs-meta scroll-reveal">
+        <div class="glass-card"><span class="cs-label">Role</span>Solo: design, art direction, code</div>
+        <div class="glass-card"><span class="cs-label">Platform</span>Android, production ready</div>
+        <div class="glass-card"><span class="cs-label">Stack</span>Flutter, Flame, Firebase</div>
+        <div class="glass-card"><span class="cs-label">Scope</span>Campaign, endless, daily, Forge, Lab</div>
+      </div>
+
+      <div class="glass-card cs-stage scroll-reveal">
+        <div class="cs-hero-row">
+          <figure>
+            <div class="cs-phone">
+              <video src="/assets/work/bf-gameplay.mp4" poster="/assets/work/bf-gameplay-poster.jpg" autoplay muted
+                loop playsinline preload="metadata"
+                aria-label="Brick Fury gameplay showing combos, double strike and callouts"></video>
+            </div>
+            <figcaption>Gameplay capture from a real device.</figcaption>
+          </figure>
+          <figure>
+            <div class="cs-shots">
+              <img src="/assets/work/bf-g5-combo-godlike.webp" alt="Combo callouts stacking during play" loading="lazy" width="540" height="960">
+              <img src="/assets/work/bf-g2-perk-draft.webp" alt="Milestone perk draft with three choices" loading="lazy" width="540" height="960">
+              <img src="/assets/work/bf-starmap.webp" alt="Campaign star map with sector nodes" loading="lazy" width="540" height="960">
+            </div>
+            <figcaption>Combo feedback in play, the milestone perk draft, and the campaign star map.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="cs-decisions">
+        <article class="glass-card scroll-reveal">
+          <span class="section-tag">Decision 01 · HUD</span>
+          <h3>A quiet metal frame around a loud playfield</h3>
+          <p>The HUD is a metallic sci-fi frame with neon side rails coloured by difficulty, and fixed docks for
+            power-up timers. Score, wave and currency sit in one strip at the top, so nothing competes with the ball.</p>
+          <p class="cs-why"><b>Why:</b> the bricks already use five saturated colours. A HUD just as loud would make
+            players lose the ball, so colour on the frame carries one meaning only: difficulty.</p>
+        </article>
+        <article class="glass-card scroll-reveal">
+          <span class="section-tag">Decision 02 · Damage</span>
+          <h3>Cracks instead of colour shifts</h3>
+          <p>Early builds showed brick health by changing colour. I replaced that with a crack-and-chunk system:
+            bricks visibly fracture and shed pieces as they take hits.</p>
+          <p class="cs-why"><b>Why:</b> colour already meant brick type, so it couldn't also mean health. Cracks
+            read instantly, don't rely on colour vision, and make every hit feel physical.</p>
+        </article>
+        <article class="glass-card scroll-reveal">
+          <span class="section-tag">Decision 03 · Feedback</span>
+          <h3>Callouts with a clear pecking order</h3>
+          <p>Hit words (SNAP, CRISP, BLAZING, GODLIKE) grow in size and warmth as the combo builds. Point values stay
+            small and white, and rare moments like DOUBLE STRIKE and FURY MODE get the biggest type.</p>
+          <p class="cs-why"><b>Why:</b> the player should feel the reward without reading. The type hierarchy does
+            the explaining.</p>
+        </article>
+        <article class="glass-card scroll-reveal">
+          <span class="section-tag">Decision 04 · Naming</span>
+          <h3>LUXIUM, not "Laxium"</h3>
+          <p>The premium currency and its fragments are LUXIUM and LUXIUM SHARD. "Laxium" was dropped early because
+            of the laxative association, and "Brick Fury" went through trademark checks before any art was made.</p>
+          <p class="cs-why"><b>Why:</b> a name is part of the interface. It has to sound right when someone says it
+            out loud.</p>
+        </article>
+      </div>
+
+      <div class="cs-gallery">
+        <figure class="glass-card cs-wide scroll-reveal">
+          <img src="/assets/work/bf-pod-states.webp" alt="Five Lab pod states: empty, working, nearly done, finished, collected" loading="lazy" width="1070" height="309">
+          <figcaption>The Lab pod in five states: empty, working, nearly done, finished, collected. The object never
+            moves; only fill, glow and colour temperature change, so a row of pods can be read at a glance.</figcaption>
+        </figure>
+        <figure class="glass-card scroll-reveal">
+          <div class="cs-lab">
+            <img src="/assets/work/bf-lab.webp" alt="Lab screen with two crafting stations" loading="lazy" width="390" height="1396">
+            <figcaption>The Lab crafts new balls, paddles and cores; upgrades stay in the Forge. One job per screen,
+              even though merging them would have saved a tab.</figcaption>
+          </div>
+        </figure>
+        <figure class="glass-card scroll-reveal">
+          <img src="/assets/work/bf-luxium.webp" alt="LUXIUM shard progression from dim to bright" loading="lazy" width="1400" height="619">
+          <figcaption>LUXIUM shard progression. Same silhouette at every step, getting brighter and sharper, so it
+            reads as progress rather than a new item.</figcaption>
+        </figure>
+        <figure class="glass-card cs-wide scroll-reveal">
+          <img src="/assets/work/bf-feature.webp" alt="Brick Fury store feature graphic" loading="lazy" width="1024" height="500">
+          <figcaption>Store feature graphic: one headline, four numbers (250 sectors, 5 chapters, 7 ultimates, endless
+            mode) and a clear promise: free to play, no forced ads, no energy timers.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 02 3SCORERS ═══════════ -->
+  <section class="section" id="threescorers">
+    <div class="section-container">
+      <div class="cs-head scroll-reveal">
+        <div>
+          <span class="section-tag">02 · Sports Product</span>
+          <h2 class="section-title">3SCORERS</h2>
+        </div>
+        <p class="panel-description cs-lede">
+          A fantasy football and prediction app with live match data. I lead the mobile team: I own the Flutter
+          architecture and build the animated parts of the product (player cards, match moments, the isometric
+          city) with CustomPainter, Rive and Flame.
+        </p>
+      </div>
+
+      <div class="cs-meta scroll-reveal">
+        <div class="glass-card"><span class="cs-label">Role</span>Mobile Team Lead</div>
+        <div class="glass-card"><span class="cs-label">Since</span>June 2023</div>
+        <div class="glass-card"><span class="cs-label">Stack</span>Flutter, Bloc, Rive, Flame</div>
+        <div class="glass-card"><span class="cs-label">Live</span>
+          <a href="https://play.google.com/store/apps/details?id=com.stemos.app3scorers" target="_blank" rel="noopener" class="cs-link">Google Play</a> ·
+          <a href="https://3scorers.com/" target="_blank" rel="noopener" class="cs-link">3scorers.com</a></div>
+      </div>
+
+      <div class="glass-card cs-stage scroll-reveal">
+        <div class="cs-trio">
+          <img src="/assets/work/3s-hero.webp" alt="3Scorers app screens on three phones" loading="lazy" width="1200" height="979">
+          <img src="/assets/work/3s-player.webp" alt="Player profile screen" loading="lazy" width="700" height="962">
+          <img src="/assets/work/3s-match.webp" alt="Match detail with score, scorers and player of the match" loading="lazy" width="700" height="924">
+        </div>
+        <p class="cs-cap">Match detail and player profile. Club colour tints the header so you know which team you're
+          looking at before reading a word; the stats sit on a neutral surface so they stay legible.</p>
+      </div>
+
+      <div class="cs-decisions">
+        <article class="glass-card scroll-reveal">
+          <span class="section-tag">Motion</span>
+          <h3>Animation only where it means something</h3>
+          <p>Player card reveals, goal moments and reward drops are animated in Rive and CustomPainter. Lists, tables
+            and settings stay still.</p>
+          <p class="cs-why"><b>Why:</b> when everything moves, nothing stands out. Motion is kept for moments that
+            change how the user feels.</p>
+        </article>
+        <article class="glass-card scroll-reveal">
+          <span class="section-tag">World</span>
+          <h3>An isometric city as the home screen</h3>
+          <p>The club world is a 3D isometric city canvas with assets delivered over the air, so new buildings and
+            events ship without an app update.</p>
+          <p class="cs-why"><b>Why:</b> most fantasy apps look like spreadsheets. A place you can visit gives people a
+            reason to come back between matchdays.</p>
+        </article>
+        <article class="glass-card scroll-reveal">
+          <span class="section-tag">Engineering</span>
+          <h3>Architecture a team can move fast in</h3>
+          <p>Clean Architecture with Bloc, widget and unit tests on every controller, and code review for every
+            change. I mentor the junior developers on the team.</p>
+          <p class="cs-why"><b>Why:</b> live sports data changes every minute. The codebase has to make the next
+            feature cheap, not scary.</p>
+        </article>
+        <article class="glass-card scroll-reveal">
+          <span class="section-tag">Brand</span>
+          <h3>A coin that feels worth earning</h3>
+          <div class="cs-inline">
+            <p>The in-app currency is a gold, minted version of the 3Scorers mark, so rewards look and feel like the
+              brand itself.</p>
+            <img src="/assets/work/3s-coin.webp" alt="3Scorers gold coin" loading="lazy" width="500" height="475">
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 03 FINTECH ═══════════ -->
+  <section class="section" id="fintech">
+    <div class="section-container">
+      <div class="cs-head scroll-reveal">
+        <div>
+          <span class="section-tag">03 · Fintech, Shipped</span>
+          <h2 class="section-title">MONEY APPS</h2>
+        </div>
+        <p class="panel-description cs-lede">
+          Two production apps where I was the senior Flutter engineer, building from the clients' designs. They
+          taught me what trust looks like on a screen: balances you can read at a glance, and flows that never leave
+          you wondering whether your money moved.
+        </p>
+      </div>
+      <div class="cs-fin">
+        <article class="glass-card scroll-reveal">
+          <div>
+            <span class="section-tag">Online Banking · 2025</span>
+            <h3>Moremonee MFB</h3>
+            <p>Payments and savings for a microfinance bank. Identity verification with the Dojah SDK, built on
+              Stacked architecture. Live on both stores.</p>
+            <div class="detail-card-tech"><span class="tech-pill">Flutter</span><span class="tech-pill">Stacked</span><span class="tech-pill">Dojah SDK</span></div>
+            <div class="detail-card-links">
+              <a href="https://play.google.com/store/apps/details?id=com.moremoneebank.m_m" target="_blank" rel="noopener" class="btn btn-outline btn-sm magnetic-btn"><span>Play Store</span></a>
+              <a href="https://apps.apple.com/ng/app/moremonee/id6480344981" target="_blank" rel="noopener" class="btn btn-outline btn-sm magnetic-btn"><span>App Store</span></a>
+            </div>
+          </div>
+          <img src="/assets/work/mm-app.webp" alt="Moremonee app promotional visual" loading="lazy" width="900" height="900">
+        </article>
+        <article class="glass-card scroll-reveal">
+          <div>
+            <span class="section-tag">Agent Savings · 2025</span>
+            <h3>Little Wheel Agent</h3>
+            <p>Agents help people save and earn a commission on every deposit. Google ML Kit for document scanning,
+              Bloc for state.</p>
+            <div class="detail-card-tech"><span class="tech-pill">Flutter</span><span class="tech-pill">Bloc</span><span class="tech-pill">ML Kit</span></div>
+            <div class="detail-card-links">
+              <a href="https://littlewheel.app/home" target="_blank" rel="noopener" class="btn btn-outline btn-sm magnetic-btn"><span>Website</span></a>
+            </div>
+          </div>
+          <img src="/assets/work/lw-app.webp" alt="Little Wheel app screen" loading="lazy" width="145" height="296" class="cs-small">
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 04 APPROACH ═══════════ -->
+  <section class="section" id="approach">
+    <div class="section-container">
+      <div class="cs-head scroll-reveal">
+        <div>
+          <span class="section-tag">04 · Approach</span>
+          <h2 class="section-title">HOW I JUDGE A SCREEN</h2>
+        </div>
+        <p class="panel-description cs-lede">
+          The checklist I use on my own work and in code and design reviews. Each step has to pass before the next
+          one is worth discussing.
+        </p>
+      </div>
+      <ol class="cs-rubric">
+        <li class="glass-card scroll-reveal"><span class="cs-num">01</span><div><h3>Does it answer the first question?</h3><p>In three seconds, can you tell what the screen is for and what to do next? If not, nothing else matters yet.</p></div></li>
+        <li class="glass-card scroll-reveal"><span class="cs-num">02</span><div><h3>Is there one clear hierarchy?</h3><p>One primary action, one focal point. Size, weight and contrast should agree with each other.</p></div></li>
+        <li class="glass-card scroll-reveal"><span class="cs-num">03</span><div><h3>Does every colour carry one meaning?</h3><p>If a colour means "danger" in one place and "brand" in another, the user pays for it. Brick Fury's crack system came from this rule.</p></div></li>
+        <li class="glass-card scroll-reveal"><span class="cs-num">04</span><div><h3>Is the spacing a system?</h3><p>Consistent rhythm and aligned edges, with no values picked by eye. Uneven spacing is the fastest giveaway of rushed work.</p></div></li>
+        <li class="glass-card scroll-reveal"><span class="cs-num">05</span><div><h3>Are all the states designed?</h3><p>Empty, loading, error, partial, full. The happy path is only a fraction of the real screen.</p></div></li>
+        <li class="glass-card scroll-reveal"><span class="cs-num">06</span><div><h3>Does the motion earn its place?</h3><p>Every animation should explain a change or reward an action. Anything else is decoration.</p></div></li>
+        <li class="glass-card scroll-reveal"><span class="cs-num">07</span><div><h3>Is it on-brand, or just on-trend?</h3><p>Good work looks like it could only belong to this product, not like every other app released this year.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section" id="cta">
+    <div class="section-container text-center py-8">
+      <div class="scroll-reveal glass-card p-12 max-w-3xl mx-auto rounded-3xl border border-white/10 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent"></div>
+        <h2 class="relative z-10 font-display font-bold text-4xl md:text-5xl mb-6">Need both sides of the work?</h2>
+        <p class="relative z-10 text-gray-400 mb-8 max-w-xl mx-auto">
+          Design that survives engineering, and engineering that respects the design. Tell me what you're building.
+        </p>
+        <div class="relative z-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <a href="/#contact"
+            class="magnetic-btn group relative px-8 py-4 bg-accent text-primary font-semibold rounded-full overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(0,255,136,0.4)]">
+            <span class="relative z-10">Get in Touch</span>
+            <div class="absolute inset-0 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
+          </a>
+          <a href="https://docs.google.com/document/d/1mv-3Ysxq-Bz5SCS23LUI2O2bGZu_Wdl4RXJfRWwHndQ/edit?usp=sharing"
+            target="_blank" rel="noopener"
+            class="magnetic-btn px-8 py-4 border border-white/20 rounded-full font-semibold hover:bg-white/10 transition-all hover:border-accent">
+            Download CV
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-bg-text">SOLOMON</div>
+    <div class="footer-content">
+      <p>Designed &amp; Built by <strong>Solomon Nengi Precious</strong></p>
+      <p class="footer-year">© 2026</p>
+    </div>
+  </footer>
+
+  <script type="module" src="/main.js"></script>
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.timeline()
+      .from('#cs-kicker', { opacity: 0, y: 30, duration: 0.9, ease: 'power3.out' })
+      .from('#cs-title', { opacity: 0, scale: 0.94, y: 30, duration: 1, ease: 'power3.out' }, '-=0.6')
+      .from('#cs-desc', { opacity: 0, y: 30, duration: 0.9, ease: 'power3.out' }, '-=0.7')
+      .from('#cs-jump', { opacity: 0, y: 20, duration: 0.9, ease: 'power3.out' }, '-=0.7');
+
+    gsap.utils.toArray('.scroll-reveal').forEach(el => {
+      gsap.fromTo(el, { y: 50, opacity: 0 }, {
+        y: 0, opacity: 1, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 88%' }
+      });
+    });
+
+    // Reduced motion: stop the gameplay loop
+    try {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const v = document.querySelector('.cs-phone video');
+        if (v) { v.removeAttribute('autoplay'); v.pause(); v.controls = true; }
+      }
+    } catch (e) { }
+
+    // Mobile menu
+    const btn = document.getElementById('mobile-menu-btn');
+    const menu = document.getElementById('mobile-menu');
+    let open = false;
+    if (btn && menu) {
+      btn.addEventListener('click', () => { open = !open; menu.classList.toggle('translate-x-full', !open); });
+      document.querySelectorAll('.mobile-link').forEach(l => l.addEventListener('click', () => { open = false; menu.classList.add('translate-x-full'); }));
+    }
+  </script>
+</body>
+
+</html>
